@@ -27,22 +27,55 @@ exports.transfo = {
     // setup here if necessary
     done();
   },
-  default_options: function(test) {
-    test.expect(1);
 
-    var actual = grunt.file.read('tmp/default_options');
-    var expected = grunt.file.read('test/expected/default_options');
-    test.equal(actual, expected, 'should describe what the default behavior is.');
+
+  // Compatibility with grunt-contrib-copy
+
+  copy_main: function(test) {
+    'use strict';
+
+    test.expect(3);
+
+    var actual = fs.readdirSync('tmp_transfo/copy_test_files').sort();
+    var expected = fs.readdirSync('test/copy/expected/copy_test_files').sort();
+    test.deepEqual(expected, actual, 'should copy several files');
+
+    actual = fs.readdirSync('tmp_transfo/copy_test_mix').sort();
+    expected = fs.readdirSync('test/copy/expected/copy_test_mix').sort();
+    test.deepEqual(expected, actual, 'should copy a mix of folders and files');
+
+    actual = fs.readdirSync('tmp_transfo/copy_test_v0.1.0').sort();
+    expected = fs.readdirSync('test/copy/expected/copy_test_v0.1.0').sort();
+    test.deepEqual(expected, actual, 'should parse both dest and src templates');
 
     test.done();
   },
-  custom_options: function(test) {
+
+  copy_flatten: function(test) {
+    'use strict';
+
     test.expect(1);
 
-    var actual = grunt.file.read('tmp/custom_options');
-    var expected = grunt.file.read('test/expected/custom_options');
-    test.equal(actual, expected, 'should describe what the custom option(s) behavior is.');
+    var actual = fs.readdirSync('tmp_transfo/copy_test_flatten').sort();
+    var expected = fs.readdirSync('test/copy/expected/copy_test_flatten').sort();
+    test.deepEqual(expected, actual, 'should create a flat structure');
 
     test.done();
   },
+
+  copy_single: function(test) {
+    'use strict';
+
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp_transfo/single.js');
+    var expected = grunt.file.read('test/copy/expected/single.js');
+    test.equal(expected, actual, 'should allow for single file copy');
+
+    test.done();
+  }
+
+
+
+  // Compatibility with grunt-contrib-concat
 };

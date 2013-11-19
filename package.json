@@ -32,12 +32,24 @@
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-nodeunit": "~0.2.0",
-    "grunt": "~0.4.1"
+    "grunt": "~0.4.1",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-concat": "~0.3.0"
   },
   "peerDependencies": {
     "grunt": "~0.4.1"
   },
   "keywords": [
     "gruntplugin"
-  ]
+  ],
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "async": "~0.2.9",
+    "bun": "0.0.10",
+    "mkdirp": "~0.3.5",
+    "q": "~0.9.7",
+    "stream-stream": "~1.2.3",
+    "rimraf": "~2.2.2",
+    "through2": "~0.2.3"
+  }
 }
