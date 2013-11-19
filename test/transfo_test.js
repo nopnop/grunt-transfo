@@ -12,6 +12,7 @@ function getNormalizedFile(filepath) {
 exports.transfo = {
 
   // Compatibility with grunt-contrib-copy
+  // From https://github.com/gruntjs/grunt-contrib-copy/blob/master/test/copy_test.js
 
   copy_main: function(test) {
     'use strict';
@@ -60,6 +61,7 @@ exports.transfo = {
 
 
   // Compatibility with grunt-contrib-concat
+  // From https://github.com/gruntjs/grunt-contrib-concat/blob/master/test/concat_test.js
 
   default_options: function(test) {
     test.expect(1);
