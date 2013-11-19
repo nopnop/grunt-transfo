@@ -2,6 +2,8 @@
 
 > Transfo offer both 'copy' and 'concat' task at once with the addition of streamed transformation of content and optional caching based on files mtime to limit unrequired file processing. Transfo should be used has an alternative to any grunt-contrib-copy and/or grunt-contrib-concat usage without any change in your grunt configuration (see compatibility test).
 
+![transfo.png](https://raw.github.com/nopnop/grunt-transfo/master/transfo.png)
+
 ## Getting Started
 This plugin requires Grunt `~0.4.1` and node `>= 0.10.0`
 
