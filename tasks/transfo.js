@@ -73,7 +73,7 @@ module.exports = function(grunt) {
     // Temporary folder to write concat build
     // This folder must be added to any clean task
     // when used with 'lazy' mode
-    cache: 'tmp/transfo/',
+    cache: 'tmp/grunt-transfo/',
   };
 
 
