@@ -50,7 +50,8 @@ module.exports = function(grunt) {
     mode: parseInt('0777', 8) & (~process.umask()),
 
 
-    // How many files to proceed simultaneously ?
+    // How many files to proceed at the same time
+    // (copy and concat are asynchronously executed).
     concurrency: 1,
 
     // A list of transform function that
