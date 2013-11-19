@@ -200,7 +200,7 @@ module.exports = function(grunt) {
     nodeunit: {
       copy:    ['test/copy_test.js'],
       concat:  ['test/concat_test.js'],
-      transfo: ['test/concat_transfo.js'],
+      transfo: ['test/transfo_test.js'],
     },
 
   });

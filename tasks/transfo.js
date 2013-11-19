@@ -150,13 +150,6 @@ module.exports = function(grunt) {
         // Concat
         sources.forEach(function(src) {
 
-          if (!grunt.file.exists(src)) {
-            grunt.log.warn('Source file "' + filepath + '" not found.');
-            return false;
-          } else {
-            return true;
-          }
-
           var def       = Q.defer();
           var cacheDest = path.join(options.cache, fileUID(src));
 
@@ -703,18 +696,23 @@ module.exports = function(grunt) {
           dest = filePair.dest;
         }
 
-        // Error for inconsistent copy...
+
         if(isDir(dest) !== isDir(src)) {
           src = src + '/';
+        }
+
+        if (!grunt.file.exists(src)) {
+          grunt.log.warn('Source file "' + src + '" not found.');
+          return;
         }
 
         if(!destSources[dest]) {
           destSources[dest] = [];
         }
+
         destSources[dest].push(src);
       });
     });
-
 
     // Add copy task to queueCopy
     Object.keys(destSources).forEach(function(dest) {
