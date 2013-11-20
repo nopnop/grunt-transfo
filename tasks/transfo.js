@@ -14,13 +14,14 @@ module.exports = function(grunt) {
   var async        = require('async');
   var bun          = require('bun');
   var dirname      = require('path').dirname;
+  var join         = require('path').join;
   var fs           = require('fs');
   var mkdirp       = require('mkdirp');
-  var path         = require('path');
   var Q            = require('q');
   var rimraf       = require('rimraf');
   var StreamStream = require('stream-stream');
   var through2     = require('through2');
+  var resolve      = require('path').resolve;
 
   // Utils
   var isDir        = require('./lib/utils').isDir;
@@ -145,14 +146,14 @@ module.exports = function(grunt) {
         queueCopy.push({
           src:      sources[0],
           dest:     dest,
-          options:  _.extend({}, options, { concatTo: dest, isConcat: false })
+          options:  _.extend({}, options, { realDest: dest, isConcat: false })
         });
       } else {
         // Concat
         sources.forEach(function(src) {
 
           var def       = Q.defer();
-          var cacheDest = path.join(options.cache, fileUID(src));
+          var cacheDest = join(options.cache, fileUID(src));
 
           if(!concatPromises[dest]) {
             concatPromises[dest] = [];
@@ -167,7 +168,7 @@ module.exports = function(grunt) {
           queueCopy.push({
             src:      src,
             dest:     cacheDest,
-            options:  _.extend({}, options, { concatTo: dest, isConcat: true })
+            options:  _.extend({}, options, { realDest: dest, isConcat: true })
           }, function(err, changed) {
             if(err) {
               return def.reject(err);
@@ -226,7 +227,7 @@ module.exports = function(grunt) {
             },
             function (cb) {
               body   = body.join('');
-              result = processContent( body, src, dest, _.extend({}, options), addToQueueCopy);
+              result = processContent( body, src, dest, _.extend({}, options));
               this.push(_.isString(result) ? result : body);
               cb();
           });
@@ -250,7 +251,7 @@ module.exports = function(grunt) {
             function end(cb) {
               result = body = body.join('');
               if (typeof process === 'function') {
-                result = process( body, src, dest, _.extend({}, options), addToQueueCopy);
+                result = process( body, src, dest, _.extend({}, options));
               } else if (process) {
                 result = grunt.template.process(body, process);
               }
@@ -387,7 +388,7 @@ module.exports = function(grunt) {
               trans = _(transforms)
               // Call each tranform stream builder
               .map(function(f) {
-                return f(src, dest, _.extend({}, options), addToQueueCopy);
+                return f(src, options.realDest, _.extend({}, options), addFiles);
               })
               // Keep only stream (ignore anything without a pipe() method)
               .filter(function(s) {
@@ -576,7 +577,7 @@ module.exports = function(grunt) {
               trans = _(transformsConcat)
               // Call each tranform stream builder
               .map(function(f) {
-                return f(sources, dest, _.extend({}, options));
+                return f(sources, options.realDest, _.extend({}, options));
               })
               // Keep only stream (ignore anything without a pipe() method)
               .filter(function(s) { return s && s.pipe; });
@@ -640,6 +641,41 @@ module.exports = function(grunt) {
       });
     }
 
+    /**
+     * Filepath is in cwd (even if not exist... yet)
+     *
+     * @param  {String} filepath
+     * @return {Boolean}
+     */
+    function inCwd(filepath) {
+      return grunt.file.doesPathContain(process.cwd(), resolve(filepath));
+    }
+
+    /**
+     * Allow transform stream to add files during transformation
+     * process to the copy/concat queue
+     * Path in cwd is required for security reason
+     *
+     * @param {Array|String} sources
+     * @param {String}       dest
+     */
+    function addFiles(sources, dest, options) {
+      var opt = _.extend({}, defaultOptions, options || {});
+
+      if(_.isString(sources)) {
+        sources = [sources];
+      }
+
+      if(!inCwd(dest) || _.any(sources, function(src) {
+        return !inCwd(src);
+      })) {
+        grunt.verbose.writeln('Ignore %s to %s: not in CWD.');
+        return;
+      }
+
+      return addToQueueCopy(sources, dest, opt);
+    }
+
     // ------------------------------------------------
 
     // Resolve async task when all steps are done
@@ -691,7 +727,7 @@ module.exports = function(grunt) {
         if (isDir(filePair.dest)) {
           // The destination is a directory or a file
           // resolved with the src path
-          dest = (isExpandedPair) ? filePair.dest : unixifyPath(path.join(filePair.dest, src));
+          dest = (isExpandedPair) ? filePair.dest : unixifyPath(join(filePair.dest, src));
         } else {
           // The destination is a file
           dest = filePair.dest;
