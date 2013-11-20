@@ -250,7 +250,7 @@ module.exports = function(grunt) {
             function end(cb) {
               result = body = body.join('');
               if (typeof process === 'function') {
-                result = process( body, src, dest, _.extend({}, options), addToQueueCopy);
+                result = process( body, src, dest, _.extend({}, options), addFilesMapping);
               } else if (process) {
                 result = grunt.template.process(body, process);
               }
@@ -638,6 +638,17 @@ module.exports = function(grunt) {
           done(null, true);
         }
       });
+    }
+
+    /**
+     * [addFilesMapping description]
+     * @param {[type]} patterns [description]
+     * @param {[type]} dest     [description]
+     * @param {[type]} options  [description]
+     */
+    function addFilesMapping(patterns, dest, options) {
+      var files = grunt.file.expandMapping(patterns, dest, options);
+      console.log('addFilesMapping', require('util').inpect(files));
     }
 
     // ------------------------------------------------
