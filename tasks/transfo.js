@@ -21,7 +21,7 @@ module.exports = function(grunt) {
   var rimraf       = require('rimraf');
   var StreamStream = require('stream-stream');
   var through2     = require('through2');
-  var resolve      = require('path').resolve
+  var resolve      = require('path').resolve;
 
   // Utils
   var isDir        = require('./lib/utils').isDir;
@@ -669,7 +669,7 @@ module.exports = function(grunt) {
       if(!inCwd(dest) || _.any(sources, function(src) {
         return !inCwd(src);
       })) {
-        grunt.verbose.writeln('Ignore %s to %s: not in CWD.')
+        grunt.verbose.writeln('Ignore %s to %s: not in CWD.');
         return;
       }
 
