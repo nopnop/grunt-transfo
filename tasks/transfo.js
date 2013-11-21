@@ -202,6 +202,7 @@ module.exports = function(grunt) {
       var stripBanners          = options.stripBanners;
       var mode                  = options.mode;
       var isConcat              = options.isConcat;
+      var cache                 = options.cache;
       var statSrc, statDest;
 
       // Banner and footer if any and if not applyed during concatenation
@@ -371,6 +372,10 @@ module.exports = function(grunt) {
         function(next) {
           var wait = 0;
           function _exec() {
+            var trans       = [];
+            var transStream = through2();
+            var mainStream, bodyStream, writeStream, temp;
+
             if(writtingFiles[dest]) {
               // Try leater
               grunt.verbose.writeln('  ... wait for %s before writing (%s)', dest, wait++);
@@ -380,7 +385,6 @@ module.exports = function(grunt) {
             writtingFiles[dest] = true;
 
             // Create the transformation pipeline
-            var trans = [], transStream = through2();
             tally.files++;
             // Each transform builder is called and combined in
             // one readable/writable stream using stream-combiner
@@ -397,9 +401,14 @@ module.exports = function(grunt) {
               transStream = bun(trans);
             }
 
-            var mainStream    = new StreamStream();
-            var bodyStream    = fs.createReadStream(src);
-            var writeStream   = fs.createWriteStream(dest, {mode: mode});
+            mainStream    = new StreamStream();
+            bodyStream    = fs.createReadStream(src);
+
+            if(src === dest) {
+              writeStream = through2();
+            } else {
+              writeStream = fs.createWriteStream(dest, {mode: mode});
+            }
 
             grunt.verbose.writeln(
               '  read(%s) -> transform(count:%s) -> write(%s)',
@@ -430,7 +439,14 @@ module.exports = function(grunt) {
 
             writeStream.once('finish', function() {
               writtingFiles[dest] = false;
-              next();
+              if(src === dest) {
+                // Copy temp file to destination.
+                writeStream
+                .pipe(fs.createWriteStream(dest, {mode: mode}))
+                .once('finish', next);
+              } else {
+                next();
+              }
             });
           }
           _exec();
