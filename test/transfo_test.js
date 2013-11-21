@@ -8,8 +8,30 @@ function getNormalizedFile(filepath) {
   return grunt.util.normalizelf(grunt.file.read(filepath));
 }
 
+// Temp folders:
+//   - tmp
+//   - tmp_transfo
+//   - tmp_transfo_copy
+//   - tmp_transfo_concat
+
 
 exports.transfo = {
+
+  copy_to_same_file: function(test) {
+    'use strict';
+
+    test.expect(1);
+
+    var actual = grunt.file.read('tmp_transfo/copy_to_same_file.js');
+    var expected = grunt.file.read('test/transfo/expected/copy_to_same_file.js');
+
+    test.equal(expected, actual, 'should allow destination path to be equal to the source path');
+
+    test.done();
+  },
+
+
+
 
   // Compatibility with grunt-contrib-copy
   // From https://github.com/gruntjs/grunt-contrib-copy/blob/master/test/copy_test.js

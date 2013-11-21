@@ -41,6 +41,18 @@ module.exports = function(grunt) {
     // Configuration to be run (and then tested).
     transfo: {
 
+      // When src and dest are the same file
+      copy_to_same_file_prepare: {
+        src:  ['test/transfo/fixtures/copy_to_same_file.js'],
+        dest: 'tmp_transfo/copy_to_same_file.js'
+      },
+
+      copy_to_same_file: {
+        src:  ['tmp_transfo/copy_to_same_file.js'],
+        dest:  'tmp_transfo/copy_to_same_file.js'
+      },
+
+
       // Copy tasks
       main: {
         files: [
