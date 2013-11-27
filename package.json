@@ -38,7 +38,13 @@
     "grunt": "~0.4.1"
   },
   "keywords": [
-    "gruntplugin", "grunt", "copy", "clone", "stream", "stream2", "transform"
+    "gruntplugin",
+    "grunt",
+    "copy",
+    "clone",
+    "stream",
+    "stream2",
+    "transform"
   ],
   "dependencies": {
     "underscore": "~1.5.2",
@@ -48,7 +54,8 @@
     "q": "~0.9.7",
     "stream-stream": "~1.2.3",
     "rimraf": "~2.2.2",
-    "through2": "~0.2.3"
+    "through2": "~0.2.3",
+    "dev-null": "~0.1.1"
   },
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"
