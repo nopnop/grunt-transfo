@@ -107,6 +107,12 @@ Type: `String` • Default: `tmp/grunt-transfo`
 
 The path to use to store lazy & concatenation cached files. Remember to add this path to your `clean` task if you plan to use the `lazy` option.
 
+#### readOnly
+
+Type: `Boolean` • Default: `false`
+
+Only read source content through the process & transform pipeline but write nothing to the destination.
+
 #### Any [grunt-contrib-copy options](https://github.com/gruntjs/grunt-contrib-copy#options)
 
   - [processContent](https://github.com/gruntjs/grunt-contrib-copy#processcontent)

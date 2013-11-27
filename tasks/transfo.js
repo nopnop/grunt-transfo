@@ -22,6 +22,7 @@ module.exports = function(grunt) {
   var StreamStream = require('stream-stream');
   var through2     = require('through2');
   var resolve      = require('path').resolve;
+  var devnull      = require('dev-null');
 
   // Utils
   var isDir        = require('./lib/utils').isDir;
@@ -71,6 +72,10 @@ module.exports = function(grunt) {
     // Do nothing if the destination file already exist with an equal
     // or posterior mtime
     lazy: false,
+
+    // Ignore destination, only read the source throw the
+    // the transform pipe (imply lazy to false)
+    readOnly: false,
 
     // Temporary folder to write concat build
     // This folder must be added to any clean task
@@ -203,6 +208,7 @@ module.exports = function(grunt) {
       var mode                  = options.mode;
       var isConcat              = options.isConcat;
       var cache                 = options.cache;
+      var readOnly              = options.readOnly;
       var statSrc, statDest;
 
       // Banner and footer if any and if not applyed during concatenation
@@ -303,7 +309,7 @@ module.exports = function(grunt) {
         // Ignore file processing if the destination allready
         // exist with an equal or posterior mtime
         function(next) {
-          if(!statDest || !lazy) {
+          if(!statDest || !lazy || readOnly) {
             return next();
           }
           if(statDest.mtime.getTime() >= statSrc.mtime.getTime()) {
@@ -320,6 +326,7 @@ module.exports = function(grunt) {
         // src / dest differ in type
         function(next) {
           if(
+            readOnly  ||
             !statDest ||
             (statSrc.isFile() && statDest.isFile()) ||
             (statSrc.isDirectory() && statDest.isDirectory())
@@ -335,8 +342,16 @@ module.exports = function(grunt) {
 
         // Make directory
         function(next) {
-
           var dir = statSrc.isDirectory() ? dest : dirname(dest);
+
+
+          if(readOnly) {
+            if(statSrc.isDirectory()) {
+              return done(null, true);
+            } else {
+              return next();
+            }
+          }
 
           // Make directory and leave proceed
           if(statSrc.isDirectory()) {
@@ -408,10 +423,14 @@ module.exports = function(grunt) {
             mainStream    = new StreamStream();
             bodyStream    = fs.createReadStream(src);
 
-            if(src === dest) {
-              writeStream = through2();
+            if(readOnly) {
+              writeStream = devnull();
             } else {
-              writeStream = fs.createWriteStream(dest, {mode: mode});
+              if(src === dest) {
+                writeStream = through2();
+              } else {
+                writeStream = fs.createWriteStream(dest, {mode: mode});
+              }
             }
 
             grunt.verbose.writeln(
@@ -443,6 +462,9 @@ module.exports = function(grunt) {
 
             writeStream.once('finish', function() {
               writtingFiles[dest] = false;
+              if(readOnly) {
+                return next();
+              }
               if(src === dest) {
                 // Copy temp file to destination.
                 writeStream
@@ -783,7 +805,7 @@ module.exports = function(grunt) {
     // start the concat queue (or resolving it if empty)
     defCopy.promise.then(function() {
 
-      if(Object.keys(concatSources).length === 0) {
+      if(Object.keys(concatSources).length === 0 || options.readOnly) {
         return defConcat.resolve();
       }
 

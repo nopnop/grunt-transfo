@@ -1,7 +1,7 @@
 {
   "name": "grunt-transfo",
   "description": "Transfo offer both 'copy' and 'concat' task at once with the addition of streamed transformation of content and optional caching based on files mtime to limit unrequired file processing. Transfo should be used has an alternative to any grunt-contrib-copy and/or grunt-contrib-concat usage without any change in your grunt configuration (see compatibility test)",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "homepage": "https://github.com/nopnop/grunt-transfo",
   "author": {
     "name": "Jean Ponchon",
@@ -38,7 +38,13 @@
     "grunt": "~0.4.1"
   },
   "keywords": [
-    "gruntplugin", "grunt", "copy", "clone", "stream", "stream2", "transform"
+    "gruntplugin",
+    "grunt",
+    "copy",
+    "clone",
+    "stream",
+    "stream2",
+    "transform"
   ],
   "dependencies": {
     "underscore": "~1.5.2",
@@ -48,7 +54,8 @@
     "q": "~0.9.7",
     "stream-stream": "~1.2.3",
     "rimraf": "~2.2.2",
-    "through2": "~0.2.3"
+    "through2": "~0.2.3",
+    "dev-null": "~0.1.1"
   },
   "publishConfig": {
     "registry": "http://registry.npmjs.org/"
