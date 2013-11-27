@@ -292,6 +292,10 @@ module.exports = function(grunt) {
               return done(null, false);
             }
 
+            // Add stat to options for user defined transform & process
+            options.statSrc  = statSrc;
+            options.statDest = statDest;
+
             next();
           });
         },
