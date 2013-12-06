@@ -405,6 +405,13 @@ module.exports = function(grunt) {
 
             // Create the transformation pipeline
             tally.files++;
+
+            // If the file is empty, just create an empty file and go next
+            if(!statSrc.size) {
+              fs.writeFile(dest, '', next);
+              return;
+            }
+
             // Each transform builder is called and combined in
             // one readable/writable stream using stream-combiner
             if(transforms && transforms.length) {
@@ -632,6 +639,7 @@ module.exports = function(grunt) {
 
             // Concat each sources
             sources.forEach(function(src) {
+              if(!statSources[src].size) return;
               bodyStream.write(fs.createReadStream(src));
             });
             bodyStream.end();
