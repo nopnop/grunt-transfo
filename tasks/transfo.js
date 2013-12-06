@@ -639,7 +639,9 @@ module.exports = function(grunt) {
 
             // Concat each sources
             sources.forEach(function(src) {
-              if(!statSources[src].size) return;
+              if(!statSources[src].size) {
+                return;
+              }
               bodyStream.write(fs.createReadStream(src));
             });
             bodyStream.end();
