@@ -618,7 +618,7 @@ module.exports = function(grunt) {
             writtingFiles[dest] = true;
 
             var trans = [], transStream = through2();
-            tally.files++;
+            tally.concats++;
 
             // Each transform builder is called and combined in
             // one readable/writable stream using stream-combiner
