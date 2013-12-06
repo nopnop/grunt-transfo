@@ -4,6 +4,16 @@
 
 ![transfo.png](https://raw.github.com/nopnop/grunt-transfo/master/transfo.png)
 
+## Functionalities overview
+
+  - Replace grunt-contrib-copy without any configuration changes
+  - Replace grunt-contrib-concat without any configuration changes
+  - Lazy mode offer caching to reduce processing time if the source is not newer than the destination (see `lazy` option)
+  - Use of [Stream](http://nodejs.org/api/stream.html) instead of buffering all the file content before copy or concat.
+  - Pipe stream of sources and/or concatenated sources through a pipeline of [Stream Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform) (see `transforms` option).
+  - Adding dynamically files to the processing queue while the sources goes through the transforms pipeline.
+  - Processing  more than one file at a time (see `concurrency` option)
+
 ## Getting Started
 This plugin requires Grunt `~0.4.1` and node `>= 0.10.0`
 
@@ -86,7 +96,7 @@ Each function is a constructor for a [Transform stream](http://nodejs.org/api/st
 options: {
   transforms: [
     // PassThrough ...
-    function(src, dest, options) { return new stream.Transform(); }
+    function(src, dest, options, addFiles) { return new stream.Transform(); }
   ]
 }
 ```
@@ -99,7 +109,9 @@ See too [through2](https://github.com/rvagg/through2) a nice wrapped around [str
 
 Type: `Boolean` • Default: `false`
 
-Do nothing if the destination file already exist with an equal or posterior mtime of the source(s)
+Do nothing if the destination file already exist with an equal or posterior mtime of the source(s). Both for copy and concat. Concat task a cached copy of the sources files after processing and transformation in `tmp/grunt-transfo` (see `cache` option below).
+
+This option can be useful to reduce processing time. Especially when you use transfo with [watch](https://github.com/gruntjs/grunt-contrib-watch) and [livereload](https://github.com/gruntjs/grunt-contrib-watch#optionslivereload).
 
 #### cache
 
