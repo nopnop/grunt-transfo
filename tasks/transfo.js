@@ -633,7 +633,7 @@ module.exports = function(grunt) {
               transStream = bun(trans);
             }
 
-            var mainStream    = new StreamStream();
+            var mainStream    = new StreamStream({separator: ''});
             var bodyStream    = new StreamStream({separator: separator});
             var writeStream   = fs.createWriteStream(dest, {mode: mode});
 
