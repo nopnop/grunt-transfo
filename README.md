@@ -139,7 +139,41 @@ Only read source content through the process & transform pipeline but write noth
 
 ### Usage Examples
 
-    TODO
+The [transfo-unifyurl](https://npmjs.org/package/transfo-unifyurl) library is an example of grunt-transfo stream transformation.
+[transfo-unifyurl](https://npmjs.org/package/transfo-unifyurl) copy all css assets by adding them to the grunt-transfo pipeline.
+
+```shell
+npm install transfo-unifyurl
+```
+
+```js
+grunt.initConfig({
+  transfo: {
+    // This is a concat task. grunt-transfo allow copy task too
+    concat_css: {
+      src: ['src/**/*.css'],
+      dest: 'build/css/compiled.css',
+      options: {
+        // Add unifyurl to the transformation pipeline
+        transforms: [require('transfo-unifyurl')],
+        // Set unifyurl options (below the default options):
+        unifyurl: {
+          // Assets destination: relative to the css destination path.
+          dest:       './',
+
+          // Url to the destination (default is a resolved
+          // relative path based on dest value)
+          url:        null,
+
+          // List source extension to process. Other sources are ignored.
+          extensions: ['.css']
+        },
+      },
+    },
+  },
+})
+```
+
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
