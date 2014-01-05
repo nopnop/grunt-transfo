@@ -626,7 +626,7 @@ module.exports = function(grunt) {
               trans = _(transformsConcat)
               // Call each tranform stream builder
               .map(function(f) {
-                return f(sources, options.realDest, _.extend({}, options));
+                return f(sources, dest, _.extend({}, options));
               })
               // Keep only stream (ignore anything without a pipe() method)
               .filter(function(s) { return s && s.pipe; });
