@@ -80,7 +80,7 @@ Type: `Array` of `Function` • Default: `[]`
 
 Each function is a constructor for a [Transform stream](http://nodejs.org/api/stream.html#stream_class_stream_transform). Any time a source is processed, each constructor is called with following arguments and must return a Transform stream.
 
-`function(src, dest, options, addFiles) ... `
+`Array of function(src, dest, options, addFiles) ... `
 
   - `src` {`String`}: The source file path
   - `dest` {`String`}: The destination file path
@@ -104,6 +104,22 @@ options: {
 See too [Stream Handbook](https://github.com/substack/stream-handbook) to understand why using [stream](http://nodejs.org/api/stream.html) may be very powerfull.
 
 See too [through2](https://github.com/rvagg/through2) a nice wrapped around [stream.Transform](http://nodejs.org/api/stream.html#stream_class_stream_transform).
+
+
+#### transformsConcat
+
+Type: `Array` of `Function` • Default: `[]`
+
+Like the `transforms` option but for the concatenated result.
+
+`Array of function(src, dest, options) ... `
+
+  - `src` {`String`}: The source file path
+  - `dest` {`String`}: The destination file path
+  - `options` {`Object`}:
+    - *All your task options*
+    - `isConcat` {`Boolean`}: This is file will be concatenated with others
+
 
 ####  lazy
 
